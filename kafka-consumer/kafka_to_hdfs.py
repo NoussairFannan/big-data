@@ -3,16 +3,20 @@ import json
 from datetime import datetime
 from hdfs import InsecureClient
 import time
+import os
 
 class KafkaToHDFS:
     def __init__(self):
+        kafka_servers = os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092')
+        hdfs_url = os.getenv('HDFS_NAMENODE_URL', 'http://localhost:9870')
+        
         self.consumer = KafkaConsumer(
             'traffic-events',
-            bootstrap_servers='localhost:9092',
+            bootstrap_servers=kafka_servers,
             value_deserializer=lambda m: json.loads(m.decode('utf-8')),
             group_id='hdfs-writer'
         )
-        self.hdfs_client = InsecureClient('http://localhost:9870', user='hadoop')
+        self.hdfs_client = InsecureClient(hdfs_url, user='hadoop')
         self.buffer = []
         self.buffer_size = 100  # Écrire par batch de 100
     

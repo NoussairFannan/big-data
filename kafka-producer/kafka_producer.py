@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'data-generator'))
+
 from kafka import KafkaProducer
 import json
 from traffic_generator import TrafficDataGenerator
